@@ -17,19 +17,11 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// CORS configuration supporting frontend dev server
-const envOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
+// CORS configuration loaded strictly from environment
+const allowedOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
   .split(',')
   .map((origin) => origin.trim())
   .filter(Boolean);
-
-const allowedOrigins = Array.from(
-  new Set([
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    ...envOrigins,
-  ])
-);
 
 app.use(
   cors({
