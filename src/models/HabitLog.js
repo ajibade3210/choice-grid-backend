@@ -28,4 +28,3 @@ const habitLogSchema = new mongoose.Schema(
 habitLogSchema.index({ userId: 1, date: 1 }, { unique: true });
 
 export const HabitLog = mongoose.model('HabitLog', habitLogSchema);
-export default HabitLog;

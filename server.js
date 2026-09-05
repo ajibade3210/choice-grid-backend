@@ -6,7 +6,7 @@ import authRoutes from './src/routes/auth.js';
 import settingsRoutes from './src/routes/settings.js';
 import logRoutes from './src/routes/logs.js';
 import statsRoutes from './src/routes/stats.js';
-import errorHandler from './src/middleware/errorHandler.js';
+import { errorHandler } from './src/middleware/errorHandler.js';
 
 // Load environment variables
 dotenv.config();

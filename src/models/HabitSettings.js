@@ -55,5 +55,13 @@ const habitSettingsSchema = new mongoose.Schema(
   }
 );
 
+// Atomic find-or-create to prevent duplicate key race conditions
+habitSettingsSchema.statics.findOrCreateForUser = function (userId) {
+  return this.findOneAndUpdate(
+    { userId },
+    { $setOnInsert: { userId, habits: DEFAULT_HABITS, longestStreak: 0 } },
+    { upsert: true, new: true, setDefaultsOnInsert: true }
+  );
+};
+
 export const HabitSettings = mongoose.model('HabitSettings', habitSettingsSchema);
-export default HabitSettings;

@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
+import { verifyToken } from '../utils/jwt.js';
+import { User } from '../models/User.js';
 
 export const authMiddleware = async (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ export const authMiddleware = async (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'choice_grid_super_secret_jwt_key_2026_production');
+    const decoded = verifyToken(token);
 
     const user = await User.findById(decoded.id).select('-password');
     if (!user) {
@@ -25,5 +25,3 @@ export const authMiddleware = async (req, res, next) => {
     return res.status(401).json({ error: 'Unauthorized: Invalid token' });
   }
 };
-
-export default authMiddleware;

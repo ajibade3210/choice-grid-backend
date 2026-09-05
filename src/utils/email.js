@@ -1,4 +1,4 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import pug from 'pug';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,76 +7,51 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const templatePath = path.join(__dirname, '../templates/welcome.pug');
 
-let transporterPromise = null;
+let resendClient = null;
 
-// Initialize email transporter with fallback to Ethereal test account
-const getTransporter = async () => {
-  if (transporterPromise) return transporterPromise;
-
-  transporterPromise = (async () => {
-    if (process.env.SMTP_HOST && process.env.SMTP_USER) {
-      return nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587', 10),
-        secure: process.env.SMTP_PORT === '465',
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-      });
+const getResendClient = () => {
+  if (!resendClient) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      console.warn('[Email] NOTICE: RESEND_API_KEY is not set. Welcome email will be simulated in development.');
+      return null;
     }
-
-    // Fallback: Create ephemeral Ethereal test account
-    try {
-      const testAccount = await nodemailer.createTestAccount();
-      console.log('[Email] Created Ethereal test account:', testAccount.user);
-      return nodemailer.createTransport({
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false,
-        auth: {
-          user: testAccount.user,
-          pass: testAccount.pass,
-        },
-      });
-    } catch (err) {
-      console.warn('[Email] Could not create Ethereal account, falling back to jsonTransport:', err.message);
-      return nodemailer.createTransport({ jsonTransport: true });
-    }
-  })();
-
-  return transporterPromise;
+    resendClient = new Resend(apiKey);
+  }
+  return resendClient;
 };
 
 /**
- * Sends a welcome email using Nodemailer + Pug
- * Non-blocking: returns promise and logs output/preview URL
+ * Sends a welcome email using Resend + Pug template
+ * Non-blocking: returns promise, handles errors gracefully
  */
 export const sendWelcomeEmail = async (toEmail, name) => {
   try {
-    const transporter = await getTransporter();
-
-    // Compile Pug template with dynamic name
     const html = pug.renderFile(templatePath, { name });
+    const resend = getResendClient();
 
-    const info = await transporter.sendMail({
-      from: process.env.EMAIL_FROM || '"Choice Grid" <hello@choicegrid.app>',
+    if (!resend) {
+      console.log(`[Email] Simulated welcome email sent to ${toEmail} (${name})`);
+      return { id: `simulated-${Date.now()}` };
+    }
+
+    const fromAddress = process.env.EMAIL_FROM || 'Choice Grid <hello@accessa-backend.online>';
+    const { data, error } = await resend.emails.send({
+      from: fromAddress,
       to: toEmail,
       subject: 'Welcome to Choice Grid!',
       html,
     });
 
-    console.log(`[Email] Welcome email sent to ${toEmail} (ID: ${info.messageId})`);
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-    if (previewUrl) {
-      console.log(`[Email] Preview URL: ${previewUrl}`);
+    if (error) {
+      console.error('[Email] Resend API error:', error.message || error);
+      return null;
     }
 
-    return info;
+    console.log(`[Email] Welcome email sent to ${toEmail} via Resend (ID: ${data?.id})`);
+    return data;
   } catch (error) {
     console.error('[Email] Failed to send welcome email:', error.message);
     return null;
   }
 };
-
-export default sendWelcomeEmail;
