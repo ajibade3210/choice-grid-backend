@@ -18,11 +18,18 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // CORS configuration supporting frontend dev server
-const allowedOrigins = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
-  process.env.CLIENT_URL,
-].filter(Boolean);
+const envOrigins = (process.env.CORS_ORIGIN || process.env.CLIENT_URL || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const allowedOrigins = Array.from(
+  new Set([
+    'http://localhost:5173',
+    'http://127.0.0.1:5173',
+    ...envOrigins,
+  ])
+);
 
 app.use(
   cors({
