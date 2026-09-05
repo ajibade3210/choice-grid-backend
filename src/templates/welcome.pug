@@ -3,8 +3,35 @@
 - const currentYear = new Date().getFullYear()
 doctype html
 html
-  body(style="font-family: Arial, sans-serif; background:#f6f9fc; padding:20px;")
-    div(style="max-width:600px; margin:auto; background:white; padding:30px; border-radius:8px;")
-      h2 Welcome to Choice Grid, #{name}!
-      p Let's win #{currentMonth} #{currentYear} together.
-      p Track X and. every day. Max 10 habits.
+  head
+    meta(charset="utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Welcome to Choice Grid
+  body(style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #f4f4f5; color: #18181b; padding: 40px 16px; line-height: 1.6; margin: 0;")
+    div(style="max-width: 560px; margin: 0 auto; background: #ffffff; padding: 36px 32px; border-radius: 12px; border: 1px solid #e4e4e7; box-shadow: 0 1px 3px rgba(0,0,0,0.05);")
+      h2(style="margin-top: 0; margin-bottom: 16px; font-size: 22px; font-weight: 700; color: #09090b;") Welcome to Choice Grid, #{name}!
+      p(style="margin-top: 0; margin-bottom: 16px; font-size: 15px; color: #3f3f46;") Ready to win #{currentMonth} #{currentYear}? Choice Grid is designed to make consistency effortless, visible, and focused.
+      
+      div(style="background-color: #fafafa; border-left: 3px solid #18181b; padding: 14px 18px; margin: 20px 0; border-radius: 4px;")
+        p(style="margin: 0; font-size: 14px; color: #27272a; font-weight: 600;") How your grid works:
+        ul(style="margin: 8px 0 0 0; padding-left: 20px; font-size: 14px; color: #52525b;")
+          li(style="margin-bottom: 6px;")
+            strong Focus on what matters: 
+            | Track up to 10 high-impact habits enough to change your routine without burning out.
+          li(style="margin-bottom: 6px;")
+            strong Mark your progress: 
+            | Log an 
+            strong(style="color: #18181b;") X 
+            | when completed, or a 
+            strong(style="color: #71717a;") • 
+            | (dot) for a missed or rest day.
+          li
+            strong Build momentum: 
+            | Watch your monthly score rise and keep your streaks alive day by day.
+
+      p(style="margin-top: 20px; margin-bottom: 24px; font-size: 15px; color: #3f3f46;") The secret to big transformations is small daily choices. Set your habits and check off Day 1 today.
+
+      p(style="margin-top: 24px; margin-bottom: 0; font-size: 13px; color: #71717a; border-top: 1px solid #f4f4f5; padding-top: 16px;") Here's to your streak,
+        br
+        strong Choice Grid
+
