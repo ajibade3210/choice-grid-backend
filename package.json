@@ -1,0 +1,23 @@
+{
+  "name": "choice-grid-backend",
+  "version": "1.0.0",
+  "description": "Choice Grid - Node.js + Express + MongoDB + Mongoose Backend API",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "axios": "^1.20.0",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.13",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.3",
+    "nodemailer": "^6.9.16",
+    "pug": "^3.0.3"
+  }
+}
