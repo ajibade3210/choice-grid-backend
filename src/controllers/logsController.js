@@ -38,6 +38,13 @@ export const updateDateLog = asyncHandler(async (req, res) => {
     throw new AppError('Date must be formatted as YYYY-MM-DD', 400);
   }
 
+  // Prevent logging future dates
+  const userTz = req.headers['x-timezone'];
+  const todayStr = getTodayStr(userTz);
+  if (date > todayStr) {
+    throw new AppError('Cannot log habits for future dates', 400);
+  }
+
   if (!log || typeof log !== 'object') {
     throw new AppError('Log object is required', 400);
   }
